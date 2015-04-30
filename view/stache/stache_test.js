@@ -3930,4 +3930,30 @@ steal("can/view/stache", "can/view", "can/test","can/view/mustache/spec/specs","
 
 		equal(frag.childNodes.length, 1, "only the placeholder textnode");
 	});
+
+	test('Helper handles list replacement (#1652)', 3, function () {
+
+		var state = new can.Map({
+			list: []
+		});
+
+		var helpers = {
+			listHasLength: function (options) {
+				ok(true, 'listHasLength helper evaluated');
+				return this.attr('list').attr('length') ?
+					options.fn() :
+					options.inverse();
+			}
+		};
+
+		// Helper evaluated 1st time...
+		can.stache('{{#listHasLength}}{{/listHasLength}}')(state, helpers);
+
+		// Helper evaluated 2nd time...
+		state.attr('list', []);
+
+		// Helper evaluated 3rd time...
+		state.attr('list').push('...')
+
+	});
 });
